@@ -1,0 +1,17 @@
+version: "3"
+services:
+
+  ldap:
+    build: .
+    restart: unless-stopped
+    env_file: secret.env
+
+networks:
+  default:
+    external:
+      name: ldap
+
+# add othes by
+# networks:
+#   ldap:
+#     external: true

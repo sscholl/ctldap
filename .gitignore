@@ -1,3 +1,4 @@
-/ctldap.config
-/ctldap.sh
-/node_modules
+app/ctldap.config
+app/ctldap.sh
+app/node_modules
+*.env

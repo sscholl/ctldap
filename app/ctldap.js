@@ -355,21 +355,42 @@ server.bind("ou=users,o=" + config.ldap_base_dn, function (req, res, next) {
 
 // Search implementation for user search
 server.search("ou=users,o=" + config.ldap_base_dn, searchLogging, authorize, requestUsers, function (req, res, next) {
+  console.log("[INFO] request for users");
   req.checkAll = req.scope !== "base";
   return next();
 }, sendUsers, endSuccess);
 
 // Search implementation for group search
 server.search("ou=groups,o=" + config.ldap_base_dn, searchLogging, authorize, requestGroups, function (req, res, next) {
+  console.log("[INFO] request for groups");
   req.checkAll = req.scope !== "base";
   return next();
 }, sendGroups, endSuccess);
 
 // Search implementation for user and group search
 server.search("o=" + config.ldap_base_dn, searchLogging, authorize, requestUsers, requestGroups, function (req, res, next) {
+  console.log("[INFO] request for users and groups");
   req.checkAll = req.scope === "sub";
   return next();
 }, sendUsers, sendGroups, endSuccess);
+
+// Search implementation for basic search for Directory Information Tree and the LDAP Root DSE 
+server.search('', function(req, res, next) {
+  console.log("[INFO] empty request");
+  var obj = {
+          "attributes":{
+            "objectClass":["top", "OpenLDAProotDSE"],
+            "subschemaSubentry": ["cn=subschema"],
+            "namingContexts": "o=" + config.ldap_base_dn,
+	      },
+          "dn":"",
+  };
+
+  if (req.filter.matches(obj.attributes))
+  res.send(obj);
+
+  res.end();
+}, endSuccess);
 
 // Start LDAP server
 server.listen(parseInt(config.ldap_port), function() {
