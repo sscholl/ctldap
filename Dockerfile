@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node
 MAINTAINER Simon Scholl <s@sdscholl.de>
 
 RUN mkdir /app && chown node:node /app
